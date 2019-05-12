@@ -1,5 +1,6 @@
 const { ApolloServer } = require('apollo-server-express')
 const express = require('express')
+const expressPlayground = require('graphql-playground-middleware-express').default
 
 const fs = require('fs')
 const authors = require("./data/authors")
@@ -63,6 +64,9 @@ server.applyMiddleware({ app })
 
 // 4. Create a home route
 app.get('/', (req, res) => res.end('Welcome to the PhotoShare API'))
+
+// Add /playground route 
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 
 // 5. Listen on a specific port
 app.listen({ port: 4000 }, () =>
