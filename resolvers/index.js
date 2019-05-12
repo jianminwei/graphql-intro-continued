@@ -1,36 +1,37 @@
 
 const resolvers = {
     Query: {
-        allAuthors: (parent, args, {authors}, info) => {
-            return authors
-        },
+        allAuthors: (parent, args, {db}, info) => 
+            db.collection('authors')
+                .find()
+                .toArray(),
     
-        author(parent, args, {authors}, info) {
-            return authors.find(author => author.id === args.id);
-        },
+        author: (parent, args, { db }, info) =>
+            db.collection('authors')
+                .findOne({ id: args.id }),
+  
     
-        allBooks: (parent, args, {books}, info) => {
-            return books
-        },
+        allBooks: (parent, args, {db}, info) => 
+            db.collection('books')
+                .find()
+                .toArray(),
     
-        book(parent, args, {books}, info) {
-            return books.find(book => book.id === args.id);
-        },
+        book: (parent, args, {db}, info) =>
+            db.collection('books')
+                .findOne({ id: args.id }),
     },
 
     Author: {
-        books(parent, args, {books}, info) {
-            return books.filter(book => book.author === parent.id);
-        }
+        books: (parent, args, {db}, info) =>
+            db.collection('books')
+            .find({author: parent.id})
+            .toArray()
     },
 
     Book: {
-        author(parent, args, {authors}, info) {
-            let result = authors.filter(author => author.id === parent.author);
-    
-            //here we have to return a individual Author instead of a list.
-            return result[0];
-        },
+        author: (parent, args, { db }, info) =>
+            db.collection('authors')
+            .findOne({ id: parent.author })
     }
 }
 

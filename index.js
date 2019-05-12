@@ -5,9 +5,6 @@ const { MongoClient } = require('mongodb')
 require('dotenv').config()
 
 const fs = require('fs')
-const authors = require("./data/authors")
-const books = require("./data/books")
-
 const typeDefs = fs.readFileSync('./typeDefs.graphql', 'UTF-8')
 
 const resolvers = require('./resolvers')
@@ -22,13 +19,13 @@ async function start() {
     )
 
     const db = client.db()
-    const context = { db, books, authors  }
+    const context = { db }
     const server = new ApolloServer({ typeDefs, resolvers, context })
 
     server.applyMiddleware({ app })
     app.get('/', (req, res) => res.end('Welcome to the PhotoShare API'))
     app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
-    
+
     app.listen({ port: 4000 }, () =>
         console.log(
             `GraphQL Server running at http://localhost:4000${server.graphqlPath}`
